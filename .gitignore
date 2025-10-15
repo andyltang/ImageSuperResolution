@@ -1,4 +1,5 @@
 aws/secrets/*
-aws/images/*
+ai/images/*
+ai/checkpoints/*
 __pycache__
 node_modules
