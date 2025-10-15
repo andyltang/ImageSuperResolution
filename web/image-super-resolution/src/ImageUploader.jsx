@@ -113,7 +113,7 @@ export default function ImageUploader() {
             <img
               src={preview}
               alt="Preview"
-              style={{ borderRadius: "4px" }}
+              style={{ borderRadius: "4px", maxWidth: "512px"}}
             />
           </div>
         )}
@@ -130,7 +130,7 @@ export default function ImageUploader() {
         {upscaledImage && (
           <div style={{ marginTop: "20px" }}>
             <h4>Upscaled Image</h4>
-            <a href={upscaledImage}>Link to image</a>
+            <a href={upscaledImage} target="_blank">Link to image</a>
           </div>
         )}
       </div>
