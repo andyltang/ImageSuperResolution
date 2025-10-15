@@ -1,0 +1,4 @@
+aws/secrets/*
+aws/images/*
+__pycache__
+node_modules
