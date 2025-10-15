@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
-import { config } from './configs/aws.js';
 
-const server_url = config['server'];
+const server_url = import.meta.env.VITE_UPLOAD_SERVER;
 
 export default function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
