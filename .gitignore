@@ -1,4 +1,5 @@
 aws/secrets/*
+aws/models/*
 ai/images/*
 ai/checkpoints/*
 __pycache__

@@ -1,10 +1,12 @@
 import json
-import time
 import io
-from PIL import Image
-import boto3
 import uuid
+import torch
+import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+from PIL import Image
+from lesrcnn import load
+from image_upscaler import upscale
 
 queue_url = ''
 bucket_name = ''
@@ -30,11 +32,10 @@ def write_to_s3(key, image, format='PNG'):
     buffer.seek(0)
     s3.put_object(Bucket=bucket_name, Key=key, Body=buffer, ContentType=f'image/{format.lower()}')
 
-def upscale(image, scale_factor):
-    print(f'Scaling image by {scale_factor}')
-    return image
+def process_image(image, model):
+    return upscale(image, model)
 
-def process_image_message(body, receiptHandle):
+def process_image_message(body, receiptHandle, model):
     image_id = body['id']
     scale_factor = body['scale_factor']
 
@@ -42,7 +43,7 @@ def process_image_message(body, receiptHandle):
     image = read_from_s3(original_key)
 
     result_key = f'{image_id}-{'upscaled'}'
-    result_image = upscale(image, scale_factor)
+    result_image = process_image(image, model)
     write_to_s3(result_key, result_image)
 
     sqs.delete_message(
@@ -52,6 +53,8 @@ def process_image_message(body, receiptHandle):
 
 
 def main():
+    model = load()
+
     while True:
         print('Checking queue for messages...')
         response = sqs.receive_message(
@@ -67,7 +70,7 @@ def main():
                 try:
                     body = json.loads(message['Body'])        
                     print(f'Processing message id={body['id']}')
-                    process_image_message(body, message['ReceiptHandle'])
+                    process_image_message(body, message['ReceiptHandle'], model)
                     print(f'Message id={body['id']} finished processing!')
                 except Exception as e:
                     print(f"Error processing message id={body['id']}: {e}")
