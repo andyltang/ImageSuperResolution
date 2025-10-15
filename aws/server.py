@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import uuid
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
@@ -16,8 +17,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-queue_url = ''
-bucket_name = ''
+p = Path('./secrets/aws.json')
+with p.open('r', encoding='utf-8') as f:
+    aws_endpoints = json.load(f)
+queue_url = aws_endpoints['queue_url']
+bucket_name = aws_endpoints['bucket_name']
 
 s3_client = boto3.client('s3')
 sqs_client = boto3.client('sqs')
