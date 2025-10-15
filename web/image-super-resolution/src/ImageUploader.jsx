@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
+import { config } from './configs/aws.js';
 
-const server_url = "http://localhost:8000/";
+const server_url = config['server'];
 
 export default function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
