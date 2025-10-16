@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-p = Path('./secrets/aws.json')
+p = Path('./configs/aws.json')
 with p.open('r', encoding='utf-8') as f:
     aws_endpoints = json.load(f)
 queue_url = aws_endpoints['queue_url']

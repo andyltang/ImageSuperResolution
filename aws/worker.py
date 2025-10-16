@@ -9,7 +9,7 @@ from PIL import Image
 from lesrcnn import load
 from image_upscaler import upscale
 
-p = Path('./secrets/aws.json')
+p = Path('./configs/aws.json')
 with p.open('r', encoding='utf-8') as f:
     aws_endpoints = json.load(f)
 queue_url = aws_endpoints['queue_url']
