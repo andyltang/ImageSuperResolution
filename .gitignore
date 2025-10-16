@@ -1,4 +1,4 @@
-aws/secrets/*
+aws/configs/*
 aws/models/*
 ai/images/*
 ai/checkpoints/*
