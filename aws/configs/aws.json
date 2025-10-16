@@ -1,4 +1,5 @@
 { 
   "queue_url": "",
-  "bucket_name": ""
+  "bucket_name": "",
+  "region": ""
 }

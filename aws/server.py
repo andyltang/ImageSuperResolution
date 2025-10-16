@@ -19,12 +19,12 @@ app.add_middleware(
 
 p = Path('./configs/aws.json')
 with p.open('r', encoding='utf-8') as f:
-    aws_endpoints = json.load(f)
-queue_url = aws_endpoints['queue_url']
-bucket_name = aws_endpoints['bucket_name']
+    config = json.load(f)
+queue_url = config['queue_url']
+bucket_name = config['bucket_name']
 
-s3_client = boto3.client('s3')
-sqs_client = boto3.client('sqs')
+s3_client = boto3.client('s3', region_name=config['region'])
+sqs_client = boto3.client('sqs', region_name=config['region'])
 
 dimension = {
     'upscaled': 2

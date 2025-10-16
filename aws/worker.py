@@ -11,12 +11,12 @@ from image_upscaler import upscale
 
 p = Path('./configs/aws.json')
 with p.open('r', encoding='utf-8') as f:
-    aws_endpoints = json.load(f)
-queue_url = aws_endpoints['queue_url']
-bucket_name = aws_endpoints['bucket_name']
+    configs = json.load(f)
+queue_url = configs['queue_url']
+bucket_name = configs['bucket_name']
 
-sqs = boto3.client('sqs')
-s3 = boto3.client('s3')
+sqs = boto3.client('sqs', region_name=configs['region'])
+s3 = boto3.client('s3', region_name=configs['region'])
 
 dimension = {
     'upscaled': 2
