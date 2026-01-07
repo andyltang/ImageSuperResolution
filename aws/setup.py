@@ -1,9 +1,18 @@
+"""
+Setup script to initialize an AWS SQS and S3 bucket
+"""
 import json
 import re
 
 import boto3
 
 keyre = re.compile('^AWSAccessKeyId=(.*)$')
+
+# Load credentials
+keys = get_keys('credentials.csv')
+region = 'us-west-1'
+queue_name = 'myqueue'
+bucket_name = 'sunrise-pixel-harbor-vault'
 
 def get_keys(file):
     with open(file, 'r') as inf:
@@ -47,12 +56,6 @@ def get_keys(file):
                 'aws_access_key_id': keys[1].strip(),
                 'aws_secret_access_key': keys[2].strip()
             }
-
-# Load credentials
-keys = get_keys('credentials.csv')
-region = 'us-west-1'
-queue_name = 'myqueue'
-bucket_name = 'sunrise-pixel-harbor-vault'
 
 if not queue_name: raise Exception('You must set a queue name.')
 if not bucket_name: raise Exception('You must set a bucket name.')

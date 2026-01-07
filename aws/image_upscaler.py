@@ -1,3 +1,6 @@
+"""
+Takes a Low Resolution image and upscales it using a pre-trained CNN model
+"""
 import torch
 from torchvision import transforms
 from torchvision.transforms import ToPILImage
@@ -11,7 +14,7 @@ def upscale(image, model):
   to_tensor = transforms.ToTensor()
   lr_tensor = to_tensor(lr_image).unsqueeze(0).to(device)
 
-  # Super-resolve
+  # Upscale
   with torch.no_grad():
       sr_tensor = model(lr_tensor)
       sr_tensor = torch.clamp(sr_tensor, 0, 1)

@@ -1,5 +1,9 @@
+"""
+Server to handle REST API requests for upscaling images uploaded by users
+"""
 import json
 from pathlib import Path
+
 import uuid
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
@@ -64,7 +68,7 @@ def url(name):
         return None
 
 # curl -X POST -F "file=@filename.png" http://aws-instance.com/
-@app.post("/")
+@app.post("/v1/upload/")
 async def upload(file: UploadFile = File(...)):
     contents = await file.read()
     print('contents read')

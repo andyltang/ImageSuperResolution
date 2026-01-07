@@ -1,5 +1,10 @@
+"""
+Scalable worker that polls for messages in SQS
+Upscales images using Pytorch trained CNN model and uploads upscaled images to S3 bucket
+"""
 import json
 from pathlib import Path
+
 import io
 import uuid
 import torch
