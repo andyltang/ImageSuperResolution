@@ -1,6 +1,1 @@
-aws/configs/*
-aws/models/*
-ai/images/*
-ai/checkpoints/*
-__pycache__
-node_modules
+__pycache__/
