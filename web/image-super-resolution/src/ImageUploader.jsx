@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
+import { API_ROOT } from "./config/api";
 
-const server_url = import.meta.env.VITE_UPLOAD_SERVER;
 
 export default function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -57,7 +57,7 @@ export default function ImageUploader() {
 
     try {
       setLoading(true);
-      const response = await fetch(server_url, {
+      const response = await fetch(`${API_ROOT}/image/`, {
         method: "POST",
         body: formData,
       });
@@ -68,7 +68,6 @@ export default function ImageUploader() {
 
       // Convert response to blob
       const json = await response.json();
-      console.log(JSON.stringify(json));
       setUpscaledImage(json['upscaled']);
     } catch (err) {
       console.error(err);
