@@ -1,0 +1,7 @@
+# pip install pip-tools
+# python -m piptools compile requirements.in
+boto3
+fastapi
+python-multipart
+Pillow
+uvicorn

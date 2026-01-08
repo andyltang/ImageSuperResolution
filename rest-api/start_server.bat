@@ -1,0 +1,7 @@
+docker run --rm -p 8000:8000 ^
+  -e AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID% ^
+  -e AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY% ^
+  -e AWS_REGION=%AWS_REGION% ^
+  -e AWS_S3_BUCKET=%AWS_S3_BUCKET% ^
+  -e AWS_SQS_URL=%AWS_SQS_URL% ^
+  rest-api:latest

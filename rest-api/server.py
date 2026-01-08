@@ -1,9 +1,8 @@
 """
 Server to handle REST API requests for upscaling images uploaded by users
 """
+import os
 import json
-from pathlib import Path
-
 import uuid
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
@@ -21,14 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-p = Path('./configs/aws.json')
-with p.open('r', encoding='utf-8') as f:
-    config = json.load(f)
-queue_url = config['queue_url']
-bucket_name = config['bucket_name']
-
-s3_client = boto3.client('s3', region_name=config['region'])
-sqs_client = boto3.client('sqs', region_name=config['region'])
+REGION = os.environ["AWS_REGION"]
+S3_BUCKET = os.environ["AWS_S3_BUCKET"]
+QUEUE_URL = os.environ["AWS_SQS_URL"]
+s3_client = boto3.client('s3', region_name=REGION)
+sqs_client = boto3.client('sqs', region_name=REGION)
 
 dimension = {
     'upscaled': 2
@@ -45,7 +41,7 @@ def notify_workers(id, scale_factor):
         }
 
         response = sqs_client.send_message(
-            QueueUrl=queue_url,
+            QueueUrl=QUEUE_URL,
             MessageBody=json.dumps(message_body)
         )
         print(f"Message sent to SQS: {response['MessageId']}")
@@ -59,7 +55,7 @@ def url(name):
         # get a presigned url to upload to s3
         response = s3_client.generate_presigned_url(
             'get_object',
-            Params={'Bucket': bucket_name, 'Key': name},
+            Params={'Bucket': S3_BUCKET, 'Key': name},
             ExpiresIn=3600
         )
         return response
@@ -67,11 +63,10 @@ def url(name):
         print(f"Failed to generate URL: {e}")
         return None
 
-# curl -X POST -F "file=@filename.png" http://aws-instance.com/
-@app.post("/v1/upload/")
+# curl -X POST -F "file=@filename.png" http://aws-instance.com/v1/image/
+@app.post("/v1/image/")
 async def upload(file: UploadFile = File(...)):
     contents = await file.read()
-    print('contents read')
     img = Image.open(BytesIO(contents)).convert("RGB")
 
     id = generate_id()
@@ -84,7 +79,7 @@ async def upload(file: UploadFile = File(...)):
 
     try:
         s3_client.put_object(
-            Bucket=bucket_name,
+            Bucket=S3_BUCKET,
             Key=key,
             Body=buffer,
             ContentType="image/png"
@@ -92,11 +87,11 @@ async def upload(file: UploadFile = File(...)):
         print(f"Uploaded {key} to S3.")
     except Exception as e:
         print(f"Failed to upload image to S3: {e}")
-        return 'upload failed'
+        return 'Upload failed'
 
     # queue request message to workers to begin processing the resizing
     notify_workers(id, dimension)
 
-    # Return the URLs to the images.
+    # return the URLs to the images to user
     res = {key: url(f'{id}-{key}') for key in (['original'] + list(dimension.keys()))}
     return res
