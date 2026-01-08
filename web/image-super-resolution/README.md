@@ -9,4 +9,4 @@ npm run dev
 docker build -t <image_name>:<tag> .
 
 ## Run/Deploy
-docker run --rm -p <host_port>:<container_port>
+docker run --rm -p <host_port>:<container_port> <image_name>:<tag>
