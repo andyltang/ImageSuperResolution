@@ -80,7 +80,7 @@ class LESRCNN(nn.Module):
 
 
 def load():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = LESRCNN(scale=2).to(device)
     model.load_state_dict(torch.load(MODEL, map_location=device))
     model.eval()

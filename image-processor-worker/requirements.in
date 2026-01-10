@@ -2,5 +2,9 @@
 # python -m piptools compile requirements.in
 boto3
 fastapi
-torch
 Pillow
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
+torchaudio
