@@ -8,3 +8,9 @@ The system is designed as an asynchronous, scalable pipeline:
 4. Upscaled images are stored to an object store for retrieval
 
 The architecture separates request handling, model inference, and storage, allowing the pipeline to scale horizontally and handle variable workloads without blocking user requests.
+
+![Diagram of end-to-end dataflow](/dataflow.png)
+
+#### TODO
+- Handle failures and implement retry mechanisms
+- Split the responsibilities of the API server further into uploader service
