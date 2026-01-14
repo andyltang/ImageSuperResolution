@@ -12,8 +12,14 @@ npm install
 npm run dev
 ```
 
-## Build (Docker image)
-docker build -t <image_name>:<tag> .
+## Deployment
 
-## Run/Deploy
-docker run --rm -p <host_port>:<container_port> <image_name>:<tag>
+### Build Image
+```
+docker build -t <image_name>:<image_tag> .
+```
+
+### Run/Deploy
+```
+docker run --rm -p <host_port>:<container_port> <image_name>:<image_tag>
+```

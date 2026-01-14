@@ -1,14 +1,5 @@
-# REST API for Image Uploads
-A containerized FastAPI web service written in Python that provides a REST endpoint for uploading images. Uploaded images are stored in Amazon S3 and a message is dispatched to Amazon SQS for downstream processing.
-
-## API Endpoint
-Currently supports the following endpoint:
-| Method | Endpoint | Payload |
-|----------|--------|---------|
-| `POST` | /v1/image/ | Image File (eg. PNG) |
-
-## TODO
-- Decouple REST API server, separate upload into a dedicated service
+# Image Upscaling Worker
+A scalable worker that consumes messages from SQS to handle user requests asynchronously. Retrieves the original requested image from S3 bucket and upscales them using a pre-trained CNN model to perform inference and produce an upscaled image. Resultant image is uploaded to S3 bucket where the user can request for upscaled version of the image. 
 
 ## Requirements
 - S3 bucket
