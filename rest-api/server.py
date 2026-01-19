@@ -8,8 +8,9 @@ import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 from PIL import Image
 from io import BytesIO
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from captcha_verifier import CaptchaVerifier
 
 app = FastAPI()
 app.add_middleware(
@@ -63,9 +64,13 @@ def url(name):
         print(f"Failed to generate URL: {e}")
         return None
 
-# curl -X POST -F "file=@filename.png" http://aws-instance.com/v1/image/
+
 @app.post("/v1/image/")
-async def upload(file: UploadFile = File(...)):
+async def upload(file: UploadFile = File(...), captchaToken: str = Form(...)):
+    verified = await CaptchaVerifier.verify(captchaToken)
+    if not verified:
+        raise HTTPException(status_code=403, detail="Failed captcha verification")
+
     contents = await file.read()
     img = Image.open(BytesIO(contents)).convert("RGB")
 
