@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
-import { API_ROOT } from "./config/api";
+import { useState, useRef } from 'react';
+import { API_ROOT, CAPTCHA_SITE_KEY } from './config/api';
+import Captcha from './Captcha.jsx';
 
 
 export default function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [upscaledImage, setUpscaledImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [draggingOver, setDragOver] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -16,7 +17,6 @@ export default function ImageUploader() {
     if (!file) return;
 
     setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
     setUpscaledImage(null);
   };
 
@@ -30,7 +30,6 @@ export default function ImageUploader() {
     if (!file) return;
 
     setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
     setUpscaledImage(null);
     setDragOver(false);
   };
@@ -54,6 +53,7 @@ export default function ImageUploader() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
+    formData.append("captchaToken", captchaToken);
 
     try {
       setLoading(true);
@@ -106,21 +106,26 @@ export default function ImageUploader() {
           Browse File
         </button>
 
-        {preview && (
+        {selectedFile && (
           <div style={{ margin: "10px 0" }}>
             <h4>Selected Image</h4>
             <img
-              src={preview}
+              src={URL.createObjectURL(selectedFile)}
               alt="Preview"
-              style={{ borderRadius: "4px", maxWidth: "512px"}}
+              style={{ borderRadius: "4px", maxWidth: "512px" }}
             />
           </div>
         )}
 
         <br />
+        {selectedFile && 
+          <Captcha siteKey={CAPTCHA_SITE_KEY} onVerify={setCaptchaToken} />
+        }
+
+        <br />
         <button
           onClick={handleUpload}
-          disabled={!selectedFile || loading}
+          disabled={!selectedFile || !captchaToken || loading}
           style={{ margin: "10px 0" }}
         >
           {loading ? "Upscaling..." : "Upscale!"}
